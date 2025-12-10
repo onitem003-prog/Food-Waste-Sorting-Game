@@ -228,26 +228,26 @@
 
 <div id="instructions">
     <h2>How to Play</h2>
-    <p>Drag each food item into the correct bin. Each correct answer earns 1 point.</p>
+    <p>Drag each food waste item into the correct bin. Each correct answer earns 1 point.</p>
     <p>After sorting all 10 items, your score will be revealed!</p>
     <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin: 15px 0;">
-        <h3 style="margin-top: 0; color: #2d5016;">Bin Colors Meaning:</h3>
+        <h3 style="margin-top: 0; color: #2d5016;">Food Waste Categories:</h3>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
             <div style="display: flex; align-items: center;">
                 <div style="width: 20px; height: 20px; background: #4CAF50; border-radius: 5px; margin-right: 8px;"></div>
-                <span>Green: Organic Waste</span>
+                <span><strong>Green:</strong> Organic Food Waste</span>
             </div>
             <div style="display: flex; align-items: center;">
                 <div style="width: 20px; height: 20px; background: #FFCC00; border-radius: 5px; margin-right: 8px;"></div>
-                <span>Yellow: Recyclable</span>
+                <span><strong>Yellow:</strong> Recyclable Containers</span>
             </div>
             <div style="display: flex; align-items: center;">
                 <div style="width: 20px; height: 20px; background: #2196F3; border-radius: 5px; margin-right: 8px;"></div>
-                <span>Blue: General Waste</span>
+                <span><strong>Blue:</strong> General Food Waste</span>
             </div>
             <div style="display: flex; align-items: center;">
                 <div style="width: 20px; height: 20px; background: #D32F2F; border-radius: 5px; margin-right: 8px;"></div>
-                <span>Red: Hazardous Waste</span>
+                <span><strong>Red:</strong> Hazardous Kitchen Waste</span>
             </div>
         </div>
     </div>
@@ -259,7 +259,7 @@
     
     <div class="bin-area">
         <div class="bin" id="green" ondrop="drop(event)" ondragover="allow(event)" data-type="organic">
-            <div class="bin-icon">🗑️</div>
+            <div class="bin-icon">🍎</div>
             Organic
         </div>
         <div class="bin" id="yellow" ondrop="drop(event)" ondragover="allow(event)" data-type="recycle">
@@ -277,6 +277,7 @@
     </div>
 
     <div class="item-area" id="items">
+        <!-- Organic Food Waste (Green Bin) -->
         <div class="item" draggable="true" ondragstart="drag(event)" data-type="organic">
             <div class="item-icon">🍌</div>
             Banana Peel
@@ -289,18 +290,22 @@
             <div class="item-icon">🍎</div>
             Apple Core
         </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="organic">
+            <div class="item-icon">🥚</div>
+            Egg Shells
+        </div>
+        
+        <!-- Recyclable Food Containers (Yellow Bin) -->
         <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
-            <div class="item-icon">🥤</div>
-            Plastic Cup
+            <div class="item-icon">🥫</div>
+            Tin Can
         </div>
         <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
-            <div class="item-icon">📦</div>
-            Paper Box
+            <div class="item-icon">🧃</div>
+            Juice Carton
         </div>
-        <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
-            <div class="item-icon">🍶</div>
-            Glass Bottle
-        </div>
+        
+        <!-- General Food Waste (Blue Bin) -->
         <div class="item" draggable="true" ondragstart="drag(event)" data-type="general">
             <div class="item-icon">🍬</div>
             Candy Wrapper
@@ -309,13 +314,15 @@
             <div class="item-icon">🥡</div>
             Food Packaging
         </div>
-        <div class="item" draggable="true" ondragstart="drag(event)" data-type="hazard">
-            <div class="item-icon">🔋</div>
-            Battery
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="general">
+            <div class="item-icon">🍟</div>
+            Fast Food Box
         </div>
+        
+        <!-- Hazardous Kitchen Waste (Red Bin) -->
         <div class="item" draggable="true" ondragstart="drag(event)" data-type="hazard">
-            <div class="item-icon">💡</div>
-            Light Bulb
+            <div class="item-icon">🧴</div>
+            Cooking Oil
         </div>
     </div>
     
@@ -446,13 +453,13 @@ function showFeedback(message, color) {
 function showResult() {
     let msg = "";
     if (score <= 3) {
-        msg = "You need more practice! Keep learning to sort waste correctly.";
+        msg = "You need more practice! Keep learning to sort food waste correctly.";
     } else if (score <= 7) {
-        msg = "Not bad! Your sorting skills are improving!";
+        msg = "Not bad! Your food waste sorting skills are improving!";
     } else if (score <= 9) {
-        msg = "Great job! You're almost a waste-sorting master!";
+        msg = "Great job! You're almost a food waste sorting master!";
     } else {
-        msg = "Amazing! You are a Golden Waste Sorting Champion!";
+        msg = "Amazing! You are a Golden Food Waste Sorting Champion!";
     }
 
     document.getElementById("resultText").innerHTML = `<h3>Your Score: ${score}/10</h3><p>${msg}</p>`;
