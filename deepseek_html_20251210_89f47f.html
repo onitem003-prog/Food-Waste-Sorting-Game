@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Waste Sorting Game</title>
+<style>
+    body {
+        font-family: "Arial Rounded MT", Arial, sans-serif;
+        background: #fef7e6;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        margin-top: 20px;
+        color: #2d5016;
+        font-size: 2.5rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    #instructions {
+        background: #fff3c4;
+        padding: 25px;
+        margin: 20px auto;
+        width: 85%;
+        max-width: 800px;
+        border-radius: 20px;
+        font-size: 18px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border: 3px solid #ffcc00;
+    }
+
+    #instructions h2 {
+        color: #d35400;
+        margin-top: 0;
+    }
+
+    #gameArea {
+        display: none;
+        margin-top: 25px;
+        padding-bottom: 30px;
+    }
+
+    .bin-area {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 20px auto;
+        max-width: 900px;
+    }
+
+    .bin {
+        width: 140px;
+        height: 170px;
+        border-radius: 15px;
+        padding: 15px 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+
+    .bin:hover {
+        transform: translateY(-5px);
+    }
+
+    #green { background: linear-gradient(to bottom, #4CAF50, #2E7D32); }
+    #yellow { background: linear-gradient(to bottom, #FFCC00, #F57C00); }
+    #blue { background: linear-gradient(to bottom, #2196F3, #0D47A1); }
+    #red { background: linear-gradient(to bottom, #D32F2F, #B71C1C); }
+
+    .bin-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .item-area {
+        margin: 30px auto 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 20px;
+        max-width: 900px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 20px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .item {
+        width: 100px;
+        height: 100px;
+        cursor: grab;
+        user-select: none;
+        padding: 10px;
+        background: white;
+        border-radius: 15px;
+        font-size: 15px;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.2s;
+        border: 2px solid transparent;
+    }
+
+    .item:hover {
+        transform: scale(1.05);
+        border-color: #ff9f9f;
+    }
+
+    .item-icon {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    #scoreDisplay {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2d5016;
+        background: #e8f5e9;
+        padding: 10px 20px;
+        border-radius: 50px;
+        display: inline-block;
+        margin-top: 10px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    #resultPopup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        font-size: 20px;
+        width: 80%;
+        max-width: 500px;
+        z-index: 100;
+        border: 5px solid #ffcc00;
+    }
+
+    #resultPopup h2 {
+        color: #d35400;
+        margin-top: 0;
+    }
+
+    button {
+        padding: 15px 30px;
+        border-radius: 10px;
+        background: linear-gradient(to bottom, #ff9f9f, #ff6b6b);
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        background: linear-gradient(to bottom, #ff6b6b, #ff5252);
+    }
+
+    .instructions-btn {
+        background: linear-gradient(to bottom, #4CAF50, #2E7D32);
+        margin-top: 10px;
+    }
+
+    .instructions-btn:hover {
+        background: linear-gradient(to bottom, #2E7D32, #1B5E20);
+    }
+
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 99;
+    }
+
+    @media (max-width: 768px) {
+        .bin-area {
+            gap: 15px;
+        }
+        
+        .bin {
+            width: 120px;
+            height: 150px;
+            font-size: 18px;
+        }
+        
+        .item {
+            width: 85px;
+            height: 85px;
+            font-size: 13px;
+        }
+        
+        .item-icon {
+            font-size: 25px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<h1>Food Waste Sorting Game</h1>
+
+<div id="instructions">
+    <h2>How to Play</h2>
+    <p>Drag each food item into the correct bin. Each correct answer earns 1 point.</p>
+    <p>After sorting all 10 items, your score will be revealed!</p>
+    <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <h3 style="margin-top: 0; color: #2d5016;">Bin Colors Meaning:</h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 20px; height: 20px; background: #4CAF50; border-radius: 5px; margin-right: 8px;"></div>
+                <span>Green: Organic Waste</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="width: 20px; height: 20px; background: #FFCC00; border-radius: 5px; margin-right: 8px;"></div>
+                <span>Yellow: Recyclable</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="width: 20px; height: 20px; background: #2196F3; border-radius: 5px; margin-right: 8px;"></div>
+                <span>Blue: General Waste</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="width: 20px; height: 20px; background: #D32F2F; border-radius: 5px; margin-right: 8px;"></div>
+                <span>Red: Hazardous Waste</span>
+            </div>
+        </div>
+    </div>
+    <button class="instructions-btn" onclick="startGame()">Start Game</button>
+</div>
+
+<div id="gameArea">
+    <div id="scoreDisplay">Score: <span id="scoreValue">0</span>/10</div>
+    
+    <div class="bin-area">
+        <div class="bin" id="green" ondrop="drop(event)" ondragover="allow(event)" data-type="organic">
+            <div class="bin-icon">🗑️</div>
+            Organic
+        </div>
+        <div class="bin" id="yellow" ondrop="drop(event)" ondragover="allow(event)" data-type="recycle">
+            <div class="bin-icon">♻️</div>
+            Recycle
+        </div>
+        <div class="bin" id="blue" ondrop="drop(event)" ondragover="allow(event)" data-type="general">
+            <div class="bin-icon">🗑️</div>
+            General
+        </div>
+        <div class="bin" id="red" ondrop="drop(event)" ondragover="allow(event)" data-type="hazard">
+            <div class="bin-icon">⚠️</div>
+            Hazardous
+        </div>
+    </div>
+
+    <div class="item-area" id="items">
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="organic">
+            <div class="item-icon">🍌</div>
+            Banana Peel
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="organic">
+            <div class="item-icon">🥬</div>
+            Lettuce Scrap
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="organic">
+            <div class="item-icon">🍎</div>
+            Apple Core
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
+            <div class="item-icon">🥤</div>
+            Plastic Cup
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
+            <div class="item-icon">📦</div>
+            Paper Box
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="recycle">
+            <div class="item-icon">🍶</div>
+            Glass Bottle
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="general">
+            <div class="item-icon">🍬</div>
+            Candy Wrapper
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="general">
+            <div class="item-icon">🥡</div>
+            Food Packaging
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="hazard">
+            <div class="item-icon">🔋</div>
+            Battery
+        </div>
+        <div class="item" draggable="true" ondragstart="drag(event)" data-type="hazard">
+            <div class="item-icon">💡</div>
+            Light Bulb
+        </div>
+    </div>
+    
+    <button onclick="showResult()" style="margin-top: 30px;">Finish Game</button>
+</div>
+
+<div id="overlay"></div>
+
+<div id="resultPopup">
+    <h2>Game Results</h2>
+    <p id="resultText"></p>
+    <button onclick="resetGame()">Play Again</button>
+</div>
+
+<script>
+let score = 0;
+let totalItems = 10;
+let itemsPlaced = 0;
+
+function startGame() {
+    document.getElementById("instructions").style.display = "none";
+    document.getElementById("gameArea").style.display = "block";
+    updateScore();
+}
+
+function allow(ev) { 
+    ev.preventDefault(); 
+}
+
+function drag(ev) { 
+    ev.dataTransfer.setData("item-id", ev.target.dataset.type + "|" + ev.target.innerText); 
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    let data = ev.dataTransfer.getData("item-id").split("|");
+    let itemType = data[0];
+    let itemName = data[1].trim();
+    let binType = ev.target.dataset.type;
+    
+    if (!binType) {
+        // If dropped on bin icon or text, get parent bin
+        let binElement = ev.target.closest('.bin');
+        if (binElement) {
+            binType = binElement.dataset.type;
+        } else {
+            alert("Please drop on a bin!");
+            return;
+        }
+    }
+
+    if (itemType === binType) {
+        score++;
+        showFeedback("Correct! +1 point", "#4CAF50");
+    } else {
+        showFeedback("Oops! Wrong bin.", "#D32F2F");
+    }
+
+    updateScore();
+    removeItem(itemName);
+}
+
+function removeItem(name) {
+    let items = document.querySelectorAll(".item");
+    let found = false;
+    
+    items.forEach(i => {
+        if (i.innerText.trim() === name && !found) {
+            i.style.display = "none";
+            found = true;
+            itemsPlaced++;
+        }
+    });
+
+    // Check if all items are placed
+    if (itemsPlaced >= totalItems) {
+        setTimeout(() => {
+            showResult();
+        }, 500);
+    }
+}
+
+function updateScore() {
+    document.getElementById("scoreValue").textContent = score;
+}
+
+function showFeedback(message, color) {
+    // Create feedback element
+    let feedback = document.createElement("div");
+    feedback.textContent = message;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${color};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 18px;
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        animation: fadeOut 2s forwards;
+    `;
+    
+    // Add animation
+    let style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(feedback);
+    
+    // Remove after animation
+    setTimeout(() => {
+        if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+        }
+    }, 2000);
+}
+
+function showResult() {
+    let msg = "";
+    if (score <= 3) {
+        msg = "You need more practice! Keep learning to sort waste correctly.";
+    } else if (score <= 7) {
+        msg = "Not bad! Your sorting skills are improving!";
+    } else if (score <= 9) {
+        msg = "Great job! You're almost a waste-sorting master!";
+    } else {
+        msg = "Amazing! You are a Golden Waste Sorting Champion!";
+    }
+
+    document.getElementById("resultText").innerHTML = `<h3>Your Score: ${score}/10</h3><p>${msg}</p>`;
+    document.getElementById("resultPopup").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+}
+
+function resetGame() {
+    score = 0;
+    itemsPlaced = 0;
+    updateScore();
+    
+    // Reset all items
+    let items = document.querySelectorAll(".item");
+    items.forEach(i => {
+        i.style.display = "flex";
+    });
+    
+    // Hide result popup
+    document.getElementById("resultPopup").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
+}
+
+// Initialize the game
+window.onload = function() {
+    // Make items draggable
+    document.querySelectorAll('.item').forEach(item => {
+        item.setAttribute('draggable', 'true');
+    });
+};
+</script>
+
+</body>
+</html>
