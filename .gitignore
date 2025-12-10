@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+*.DS_Store
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System
+node_modules/
+*.log
+*.tmp
+*.temp
+
+# GitHub Pages
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
